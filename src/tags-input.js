@@ -41,10 +41,14 @@
  */
 tagsInput.directive('tagsInput', function($timeout, $document, tagsInputConfig, tiUtil) {
     function TagList(options, events) {
-        var self = {}, getTagText, setTagText, tagIsValid;
+        var self = {}, getTagText, setTagText, tagIsValid, getIdProperty;
 
-        getTagText = function(tag) {
-            return tiUtil.safeToString(tag[options.displayProperty]);
+        getIdProperty = function() {
+            return options.trackProperty || options.displayProperty;
+        };
+
+        getTagText = function() {
+            return tiUtil.safeToString(getIdProperty());
         };
 
         setTagText = function(tag, text) {
@@ -150,6 +154,7 @@ tagsInput.directive('tagsInput', function($timeout, $document, tagsInputConfig, 
                 minTags: [Number, 0],
                 maxTags: [Number, MAX_SAFE_INTEGER],
                 displayProperty: [String, 'text'],
+                trackProperty: [String, ''],
                 allowLeftoverText: [Boolean, false],
                 addFromAutocompleteOnly: [Boolean, false],
                 spellcheck: [Boolean, true]
@@ -212,7 +217,7 @@ tagsInput.directive('tagsInput', function($timeout, $document, tagsInputConfig, 
             };
 
             scope.track = function(tag) {
-                return tag[options.displayProperty];
+                return tag[options.trackProperty || options.displayProperty];
             };
 
             scope.$watch('tags', function(value) {
